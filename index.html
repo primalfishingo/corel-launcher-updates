@@ -339,6 +339,8 @@
       align-items: center;
       gap: 8px;
       box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+      cursor: pointer;
+      border: none;
     }
   </style>
 </head>
@@ -346,11 +348,11 @@
 
   <!-- Top Athletic Header -->
   <header class="top-header">
-    <div id="confeccao-nome" class="confeccao-badge">⚽ CONFECÇÃO ESPORTIVA</div>
+    <div id="confeccao-nome" class="confeccao-badge">⚽ FICHA OFICIAL DE UNIFORMES</div>
     <div id="pedido-titulo" class="pedido-title">Uniforme do Time</div>
     <div class="pedido-meta-row">
-      <span id="pedido-meta" class="meta-chip">Meta: Carregando...</span>
-      <span id="pedido-entrega" class="meta-chip">📅 Entrega: A definir</span>
+      <span id="pedido-meta" class="meta-chip">Meta: 15 peças</span>
+      <span id="pedido-codigo" class="meta-chip">Código: PED-0001</span>
     </div>
   </header>
 
@@ -359,7 +361,7 @@
     <div class="progress-card">
       <div class="progress-info">
         <span>Progresso da Grade</span>
-        <span id="counter-text" style="color: #38bdf8;">0 / 0</span>
+        <span id="counter-text" style="color: #38bdf8;">0 / 15 peças preenchidas</span>
       </div>
       <div class="progress-bar-bg">
         <div id="progress-bar-fill" class="progress-bar-fill"></div>
@@ -378,19 +380,22 @@
     <!-- Success Screen (após enviar) -->
     <div id="success-screen" class="success-screen">
       <div class="success-icon">🎉</div>
-      <h2 class="success-title">Grade Enviada com Sucesso!</h2>
+      <h2 class="success-title">Grade Concluída com Sucesso!</h2>
       <p class="success-desc">
-        Os dados e tamanhos de todas as peças foram gravados e já sincronizados diretamente com a confecção.<br>
-        O pedido está aprovado para entrar na fila de corte e montagem.
+        A lista com todas as peças foi formatada e está pronta para entrar em produção.<br>
+        Envie diretamente no WhatsApp da confecção para confirmar seu pedido:
       </p>
       <a id="link-whatsapp-aviso" href="#" target="_blank" class="btn-notify-whats">
-        📲 Avisar a Confecção no WhatsApp
+        📲 Enviar Grade Pronta no WhatsApp da Confecção
       </a>
+      <div style="margin-top: 18px;">
+        <button class="btn btn-outline" onclick="copiarTextoGrade()">📋 Copiar Lista de Peças</button>
+      </div>
     </div>
   </div>
 
   <div class="bottom-bar">
-    <button id="btn-submit" class="btn-submit" onclick="enviarGrade()">🚀 Confirmar e Enviar Pedido</button>
+    <button id="btn-submit" class="btn-submit" onclick="enviarGrade()">🚀 Finalizar e Enviar para a Confecção</button>
   </div>
 
   <!-- Modal Colar WhatsApp -->
@@ -408,53 +413,41 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token') || 'DEMO';
-    const FIREBASE_URL = 'https://macromaster-pedidos-default-rtdb.firebaseio.com/pedidos';
+    const timeParam = urlParams.get('time') || urlParams.get('titulo') || 'Uniforme do Time';
+    const qtdParam = parseInt(urlParams.get('qtd') || '15', 10);
+    const codParam = urlParams.get('cod') || 'PED-0001';
+    const telParam = (urlParams.get('tel') || '').replace(/\D/g, '');
 
     let pedidoData = {
-      confeccao_nome: "Confecção Esportiva",
-      titulo: "Uniformes Esportivos",
-      qtd_esperada: 15,
+      titulo: timeParam,
+      qtd_esperada: qtdParam > 0 ? qtdParam : 15,
+      codigo: codParam,
+      telefone_confeccao: telParam,
       itens: []
     };
 
     const TAMANHOS = ["PP", "P", "M", "G", "GG", "XG", "G1", "G2", "2", "4", "6", "8", "10", "12", "14", "16"];
 
-    async function carregarPedido() {
-      try {
-        const resp = await fetch(`${FIREBASE_URL}/${token}.json`);
-        if (resp.ok) {
-          const data = await resp.json();
-          if (data) {
-            pedidoData = data;
-            if (!pedidoData.itens) pedidoData.itens = [];
-          }
-        }
-      } catch (e) {
-        console.warn("Modo offline ou demonstração");
+    function iniciarFormulario() {
+      document.getElementById('pedido-titulo').textContent = pedidoData.titulo.toUpperCase();
+      document.getElementById('pedido-meta').textContent = `👕 Meta: ${pedidoData.qtd_esperada} peças`;
+      document.getElementById('pedido-codigo').textContent = `Código: ${pedidoData.codigo}`;
+
+      // Cria os slots de jogadores iniciais baseados na meta
+      const slotsIniciais = Math.min(Math.max(pedidoData.qtd_esperada, 1), 30);
+      for (let i = 0; i < slotsIniciais; i++) {
+        adicionarLinha(false, (i + 1).toString());
       }
 
-      document.getElementById('confeccao-nome').textContent = `⚽ ${(pedidoData.confeccao_nome || "MINHA CONFECÇÃO").toUpperCase()}`;
-      document.getElementById('pedido-titulo').textContent = pedidoData.titulo || "Uniforme";
-      document.getElementById('pedido-meta').textContent = `👕 Meta: ${pedidoData.qtd_esperada || 1} peças`;
-
-      if (pedidoData.itens && pedidoData.itens.length > 0) {
-        renderizarItens();
-      } else {
-        // Inicia com 3 linhas vazias para facilitar
-        for (let i = 0; i < Math.min(3, pedidoData.qtd_esperada || 3); i++) {
-          adicionarLinha(false);
-        }
-        renderizarItens();
-      }
+      renderizarItens();
       atualizarContador();
     }
 
-    function adicionarLinha(render = true) {
-      if (!pedidoData.itens) pedidoData.itens = [];
+    function adicionarLinha(render = true, numeroSugerido = "") {
+      const idx = pedidoData.itens.length;
       pedidoData.itens.push({
         Nome: "",
-        Numero: "",
+        Numero: numeroSugerido || (idx + 1).toString(),
         Tamanho: "G",
         Categoria: "Masculino",
         Manga: "Manga Curta",
@@ -552,6 +545,8 @@
       if (!texto.trim()) return;
 
       const linhas = texto.split('\n');
+      pedidoData.itens = []; // substitui pelas peças importadas
+
       linhas.forEach(linha => {
         const l = linha.trim();
         if (!l) return;
@@ -591,45 +586,60 @@
       atualizarContador();
     }
 
-    async function enviarGrade() {
-      const btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-      btn.textContent = "⏳ Enviando grade para a confecção...";
-
-      try {
-        pedidoData.grade_preenchida = true;
-        pedidoData.data_grade_preenchida = new Date().toISOString();
-
-        await fetch(`${FIREBASE_URL}/${token}.json`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            grade_preenchida: true,
-            data_grade_preenchida: pedidoData.data_grade_preenchida,
-            itens: pedidoData.itens
-          })
-        });
-
-        document.getElementById('items-container').style.display = 'none';
-        document.querySelector('.actions-bar').style.display = 'none';
-        document.querySelector('.progress-card').style.display = 'none';
-        document.querySelector('.bottom-bar').style.display = 'none';
-        
-        // Link WhatsApp de aviso
-        const whatsMsg = encodeURIComponent(`Olá! Acabei de preencher e confirmar a grade do pedido ${pedidoData.titulo} (${(pedidoData.itens || []).length} peças) pelo link.`);
-        const btnAviso = document.getElementById('link-whatsapp-aviso');
-        btnAviso.href = `https://wa.me/?text=${whatsMsg}`;
-
-        document.getElementById('success-screen').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (e) {
-        alert("Ocorreu uma falha ao enviar. Verifique sua conexão e tente novamente.");
-        btn.disabled = false;
-        btn.textContent = "🚀 Confirmar e Enviar Pedido";
-      }
+    function gerarTextoGrade() {
+      let linhas = [];
+      const validos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0));
+      
+      linhas.push(`📋 *GRADE DO PEDIDO: ${pedidoData.codigo} - ${pedidoData.titulo.toUpperCase()}* (${validos.length} Peças)`);
+      linhas.push('');
+      validos.forEach((it, idx) => {
+        let num = it.Numero ? it.Numero : (idx + 1);
+        let nome = (it.Nome || 'SEM NOME').toUpperCase();
+        linhas.push(`${num} - ${nome} - ${it.Tamanho} (${it.Categoria} / ${it.Manga}${it.Funcao === 'Goleiro' ? ' / GOLEIRO' : ''})`);
+      });
+      linhas.push('');
+      linhas.push('✅ _Grade finalizada pelo cliente e pronta para corte e confecção._');
+      return linhas.join('\n');
     }
 
-    window.addEventListener('DOMContentLoaded', carregarPedido);
+    function enviarGrade() {
+      const textoMsg = gerarTextoGrade();
+      const validos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0));
+
+      if (validos.length === 0) {
+        alert("Por favor, preencha o nome ou número de ao menos um jogador antes de enviar.");
+        return;
+      }
+
+      let whatsUrl = pedidoData.telefone_confeccao
+        ? `https://api.whatsapp.com/send?phone=${pedidoData.telefone_confeccao}&text=${encodeURIComponent(textoMsg)}`
+        : `https://api.whatsapp.com/send?text=${encodeURIComponent(textoMsg)}`;
+
+      document.getElementById('items-container').style.display = 'none';
+      document.querySelector('.actions-bar').style.display = 'none';
+      document.querySelector('.progress-card').style.display = 'none';
+      document.querySelector('.bottom-bar').style.display = 'none';
+
+      const btnAviso = document.getElementById('link-whatsapp-aviso');
+      btnAviso.href = whatsUrl;
+
+      // Abre o WhatsApp com a mensagem pronta
+      window.location.href = whatsUrl;
+
+      document.getElementById('success-screen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function copiarTextoGrade() {
+      const texto = gerarTextoGrade();
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("Lista copiada com sucesso para a Área de Transferência!");
+      }).catch(() => {
+        prompt("Copie a lista abaixo:", texto);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', iniciarFormulario);
   </script>
 </body>
 </html>
