@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grade de Uniformes & Pedido</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-glow: rgba(2, 132, 199, 0.4);
+      --accent: #f97316;
+      --bg: #090e17;
+      --card-bg: #131b2e;
+      --card-border: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.4);
+      --danger: #ef4444;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; min-height: 100vh; }
+
+    /* Top Athletic Banner */
+    .top-header {
+      background: linear-gradient(180deg, #162038 0%, #0d1527 100%);
+      padding: 24px 16px 18px 16px;
+      text-align: center;
+      border-bottom: 2px solid #1e293b;
+      position: relative;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .top-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    .confeccao-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      color: #38bdf8;
+      text-transform: uppercase;
+    }
+    .pedido-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .pedido-meta-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .meta-chip {
+      background: rgba(255,255,255,0.06);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .container { max-width: 760px; margin: 16px auto; padding: 0 14px; }
+
+    /* Sticky Progress Header */
+    .progress-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 10px;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: #0f172a;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);
+      box-shadow: 0 0 10px var(--primary-glow);
+      transition: width 0.35s ease-out;
+    }
+
+    /* Actions Bar */
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-whats {
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.4);
+      color: #25d366;
+    }
+    .btn-whats:hover { background: rgba(37, 211, 102, 0.2); }
+    .btn-outline {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+    }
+    .btn-outline:hover { background: #334155; }
+
+    /* Jersey Items Cards */
+    .items-container { display: flex; flex-direction: column; gap: 12px; }
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s;
+    }
+    .item-card:focus-within { border-color: var(--primary); }
+    .item-card-row { display: flex; gap: 10px; align-items: center; }
+
+    .jersey-number-circle {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid #334155;
+      color: #38bdf8;
+      font-size: 15px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .input-field {
+      padding: 10px 14px;
+      background: #0d1424;
+      border: 1px solid #23314d;
+      border-radius: 8px;
+      font-size: 14px;
+      color: white;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+      background: #10192e;
+    }
+    .input-name { flex: 2; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+    .input-num { width: 75px; text-align: center; font-weight: 900; font-size: 16px; color: #38bdf8; }
+
+    .item-card-details {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .select-field {
+      padding: 8px 12px;
+      border: 1px solid #2a3a5a;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #111a2e;
+      color: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+    }
+    .select-field:focus { border-color: var(--primary); }
+
+    .btn-delete-item {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px;
+      margin-left: auto;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .btn-delete-item:hover { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
+    /* Bottom Sticky Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(13, 20, 36, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 12px 18px;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+    .btn-submit {
+      width: 100%;
+      max-width: 600px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 15px 24px;
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 30px;
+      border: none;
+      box-shadow: 0 4px 18px var(--success-glow);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Modal WhatsApp */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 200;
+    }
+    .modal-content {
+      background: #131b2e;
+      border: 1px solid #23314d;
+      width: 100%;
+      max-width: 520px;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+      color: white;
+    }
+    .modal-title { font-size: 17px; font-weight: 900; margin-bottom: 8px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+    .modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
+    .modal-textarea {
+      width: 100%;
+      height: 160px;
+      padding: 12px;
+      background: #090e17;
+      border: 1px solid #2a3a5a;
+      border-radius: 8px;
+      font-size: 13px;
+      color: white;
+      resize: none;
+      margin-bottom: 16px;
+      outline: none;
+      font-family: monospace;
+    }
+    .modal-textarea:focus { border-color: var(--primary); }
+    .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* Success Splash */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 44px 20px;
+      background: #131b2e;
+      border-radius: var(--radius);
+      border: 1px solid #23314d;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .success-icon { font-size: 56px; margin-bottom: 16px; }
+    .success-title { font-size: 22px; font-weight: 900; color: #34d399; margin-bottom: 10px; }
+    .success-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-notify-whats {
+      background: #25d366;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Athletic Header -->
+  <header class="top-header">
+    <div id="confeccao-nome" class="confeccao-badge">⚽ CONFECÇÃO ESPORTIVA</div>
+    <div id="pedido-titulo" class="pedido-title">Uniforme do Time</div>
+    <div class="pedido-meta-row">
+      <span id="pedido-meta" class="meta-chip">Meta: Carregando...</span>
+      <span id="pedido-entrega" class="meta-chip">📅 Entrega: A definir</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Sticky Progress Card -->
+    <div class="progress-card">
+      <div class="progress-info">
+        <span>Progresso da Grade</span>
+        <span id="counter-text" style="color: #38bdf8;">0 / 0</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar">
+      <button class="btn btn-primary" onclick="adicionarLinha()">➕ Adicionar Jogador</button>
+      <button class="btn btn-whats" onclick="abrirModalImportar()">📋 Colar do WhatsApp</button>
+    </div>
+
+    <!-- Items List -->
+    <div id="items-container" class="items-container"></div>
+
+    <!-- Success Screen (após enviar) -->
+    <div id="success-screen" class="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">Grade Enviada com Sucesso!</h2>
+      <p class="success-desc">
+        Os dados e tamanhos de todas as peças foram gravados e já sincronizados diretamente com a confecção.<br>
+        O pedido está aprovado para entrar na fila de corte e montagem.
+      </p>
+      <a id="link-whatsapp-aviso" href="#" target="_blank" class="btn-notify-whats">
+        📲 Avisar a Confecção no WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <button id="btn-submit" class="btn-submit" onclick="enviarGrade()">🚀 Confirmar e Enviar Pedido</button>
+  </div>
+
+  <!-- Modal Colar WhatsApp -->
+  <div id="modal-whatsapp" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="modal-title">📋 Colar Lista do WhatsApp</h3>
+      <p class="modal-desc">Cole o texto que o pessoal mandou no grupo. O sistema detecta nomes, números, tamanhos e funções automaticamente:</p>
+      <textarea id="txt-whatsapp" class="modal-textarea" placeholder="Exemplo:&#10;10 - Silva - G&#10;7 - Neymar - M&#10;1 - Alisson - Goleiro Manga Longa GG"></textarea>
+      <div class="modal-buttons">
+        <button class="btn btn-outline" onclick="fecharModalImportar()">Cancelar</button>
+        <button class="btn btn-primary" onclick="processarTextoImportado()">✔ Importar Peças</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token') || 'DEMO';
+    const FIREBASE_URL = 'https://macromaster-pedidos-default-rtdb.firebaseio.com/pedidos';
+
+    let pedidoData = {
+      confeccao_nome: "Confecção Esportiva",
+      titulo: "Uniformes Esportivos",
+      qtd_esperada: 15,
+      itens: []
+    };
+
+    const TAMANHOS = ["PP", "P", "M", "G", "GG", "XG", "G1", "G2", "2", "4", "6", "8", "10", "12", "14", "16"];
+
+    async function carregarPedido() {
+      try {
+        const resp = await fetch(`${FIREBASE_URL}/${token}.json`);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data) {
+            pedidoData = data;
+            if (!pedidoData.itens) pedidoData.itens = [];
+          }
+        }
+      } catch (e) {
+        console.warn("Modo offline ou demonstração");
+      }
+
+      document.getElementById('confeccao-nome').textContent = `⚽ ${(pedidoData.confeccao_nome || "MINHA CONFECÇÃO").toUpperCase()}`;
+      document.getElementById('pedido-titulo').textContent = pedidoData.titulo || "Uniforme";
+      document.getElementById('pedido-meta').textContent = `👕 Meta: ${pedidoData.qtd_esperada || 1} peças`;
+
+      if (pedidoData.itens && pedidoData.itens.length > 0) {
+        renderizarItens();
+      } else {
+        // Inicia com 3 linhas vazias para facilitar
+        for (let i = 0; i < Math.min(3, pedidoData.qtd_esperada || 3); i++) {
+          adicionarLinha(false);
+        }
+        renderizarItens();
+      }
+      atualizarContador();
+    }
+
+    function adicionarLinha(render = true) {
+      if (!pedidoData.itens) pedidoData.itens = [];
+      pedidoData.itens.push({
+        Nome: "",
+        Numero: "",
+        Tamanho: "G",
+        Categoria: "Masculino",
+        Manga: "Manga Curta",
+        Funcao: "Linha"
+      });
+      if (render) {
+        renderizarItens();
+        atualizarContador();
+      }
+    }
+
+    function removerLinha(index) {
+      if (confirm("Remover esta peça da grade?")) {
+        pedidoData.itens.splice(index, 1);
+        renderizarItens();
+        atualizarContador();
+      }
+    }
+
+    function renderizarItens() {
+      const container = document.getElementById('items-container');
+      container.innerHTML = '';
+
+      pedidoData.itens.forEach((it, idx) => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+
+        const optTam = TAMANHOS.map(t => `<option value="${t}" ${it.Tamanho === t ? 'selected' : ''}>${t}</option>`).join('');
+
+        card.innerHTML = `
+          <div class="item-card-row">
+            <div class="jersey-number-circle">#${it.Numero || (idx + 1)}</div>
+            <input type="text" class="input-field input-name" placeholder="NOME NAS COSTAS" value="${it.Nome || ''}" oninput="itAtualizar(${idx}, 'Nome', this.value.toUpperCase())">
+            <input type="text" class="input-field input-num" placeholder="Nº" value="${it.Numero || ''}" oninput="itAtualizar(${idx}, 'Numero', this.value); atualizarNumeroBadge(this, ${idx})">
+            <button class="btn-delete-item" onclick="removerLinha(${idx})" title="Remover">🗑️</button>
+          </div>
+          <div class="item-card-details">
+            <select class="select-field" onchange="itAtualizar(${idx}, 'Tamanho', this.value)">
+              ${optTam}
+            </select>
+            <select class="select-field" onchange="itAtualizar(${idx}, 'Categoria', this.value)">
+              <option value="Masculino" ${it.Categoria === 'Masculino' ? 'selected' : ''}>Masculino</option>
+              <option value="Feminino" ${it.Categoria === 'Feminino' ? 'selected' : ''}>Feminino (Baby Look)</option>
+              <option value="Infantil" ${it.Categoria === 'Infantil' ? 'selected' : ''}>Infantil</option>
+            </select>
+            <select class="select-field" onchange="itAtualizar(${idx}, 'Manga', this.value)">
+              <option value="Manga Curta" ${it.Manga === 'Manga Curta' ? 'selected' : ''}>Manga Curta</option>
+              <option value="Manga Longa" ${it.Manga === 'Manga Longa' ? 'selected' : ''}>Manga Longa</option>
+            </select>
+            <select class="select-field" onchange="itAtualizar(${idx}, 'Funcao', this.value)">
+              <option value="Linha" ${it.Funcao === 'Linha' ? 'selected' : ''}>Jogador de Linha</option>
+              <option value="Goleiro" ${it.Funcao === 'Goleiro' ? 'selected' : ''}>Goleiro</option>
+              <option value="Comissão" ${it.Funcao === 'Comissão' ? 'selected' : ''}>Comissão Técnica</option>
+            </select>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function atualizarNumeroBadge(input, idx) {
+      const badge = input.parentElement.querySelector('.jersey-number-circle');
+      if (badge) {
+        badge.textContent = '#' + (input.value.trim() || (idx + 1));
+      }
+    }
+
+    function itAtualizar(idx, campo, valor) {
+      if (pedidoData.itens[idx]) {
+        pedidoData.itens[idx][campo] = valor;
+        atualizarContador();
+      }
+    }
+
+    function atualizarContador() {
+      const preenchidos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0)).length;
+      const total = pedidoData.qtd_esperada || pedidoData.itens.length || 1;
+      document.getElementById('counter-text').textContent = `${preenchidos} de ${total} peças preenchidas`;
+
+      const pct = Math.min(100, Math.round((preenchidos / total) * 100));
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+    }
+
+    // Modal Importar WhatsApp
+    function abrirModalImportar() {
+      document.getElementById('modal-whatsapp').style.display = 'flex';
+      document.getElementById('txt-whatsapp').focus();
+    }
+    function fecharModalImportar() {
+      document.getElementById('modal-whatsapp').style.display = 'none';
+    }
+
+    function processarTextoImportado() {
+      const texto = document.getElementById('txt-whatsapp').value;
+      if (!texto.trim()) return;
+
+      const linhas = texto.split('\n');
+      linhas.forEach(linha => {
+        const l = linha.trim();
+        if (!l) return;
+
+        let numMatch = l.match(/\b\d{1,3}\b/);
+        let num = numMatch ? numMatch[0] : "";
+
+        let tamMatch = l.match(/\b(PP|P|M|G|GG|XG|G1|G2|10|12|14|16|2|4|6|8)\b/i);
+        let tam = tamMatch ? tamMatch[0].toUpperCase() : "G";
+
+        let manga = /manga\s*longa/i.test(l) ? "Manga Longa" : "Manga Curta";
+        let funcao = /goleiro/i.test(l) ? "Goleiro" : "Linha";
+        let cat = /fem|baby/i.test(l) ? "Feminino" : (/infantil/i.test(l) ? "Infantil" : "Masculino");
+
+        let nomeLimpo = l
+          .replace(new RegExp(`\\b${num}\\b`, 'g'), '')
+          .replace(new RegExp(`\\b${tam}\\b`, 'gi'), '')
+          .replace(/manga\s*longa|manga\s*curta|goleiro|linha|masculino|feminino|infantil/gi, '')
+          .replace(/[-–—,;:|]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        if (nomeLimpo || num) {
+          pedidoData.itens.push({
+            Nome: nomeLimpo.toUpperCase(),
+            Numero: num,
+            Tamanho: tam,
+            Categoria: cat,
+            Manga: manga,
+            Funcao: funcao
+          });
+        }
+      });
+
+      fecharModalImportar();
+      renderizarItens();
+      atualizarContador();
+    }
+
+    async function enviarGrade() {
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = "⏳ Enviando grade para a confecção...";
+
+      try {
+        pedidoData.grade_preenchida = true;
+        pedidoData.data_grade_preenchida = new Date().toISOString();
+
+        await fetch(`${FIREBASE_URL}/${token}.json`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            grade_preenchida: true,
+            data_grade_preenchida: pedidoData.data_grade_preenchida,
+            itens: pedidoData.itens
+          })
+        });
+
+        document.getElementById('items-container').style.display = 'none';
+        document.querySelector('.actions-bar').style.display = 'none';
+        document.querySelector('.progress-card').style.display = 'none';
+        document.querySelector('.bottom-bar').style.display = 'none';
+        
+        // Link WhatsApp de aviso
+        const whatsMsg = encodeURIComponent(`Olá! Acabei de preencher e confirmar a grade do pedido ${pedidoData.titulo} (${(pedidoData.itens || []).length} peças) pelo link.`);
+        const btnAviso = document.getElementById('link-whatsapp-aviso');
+        btnAviso.href = `https://wa.me/?text=${whatsMsg}`;
+
+        document.getElementById('success-screen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        alert("Ocorreu uma falha ao enviar. Verifique sua conexão e tente novamente.");
+        btn.disabled = false;
+        btn.textContent = "🚀 Confirmar e Enviar Pedido";
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', carregarPedido);
+  </script>
+</body>
+</html>
