@@ -3,282 +3,471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Grade de Uniformes & Pedido</title>
+  <title>Lista de Camisas &amp; Uniformes</title>
   <style>
     :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
       --primary: #0284c7;
-      --primary-glow: rgba(2, 132, 199, 0.4);
-      --accent: #f97316;
-      --bg: #090e17;
-      --card-bg: #131b2e;
-      --card-border: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.4);
-      --danger: #ef4444;
-      --radius: 12px;
+      --primary-hover: #0369a1;
+      --primary-soft: #e0f2fe;
+      --success: #16a34a;
+      --success-hover: #15803d;
+      --accent: #ea580c;
+      --accent-soft: #ffedd5;
+      --danger: #dc2626;
+      --radius: 14px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 100px; min-height: 100vh; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    /* Top Athletic Banner */
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 105px;
+      min-height: 100vh;
+    }
+
+    /* Cabeçalho Claro e Profissional */
     .top-header {
-      background: linear-gradient(180deg, #162038 0%, #0d1527 100%);
-      padding: 24px 16px 18px 16px;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      padding: 22px 16px 20px 16px;
       text-align: center;
-      border-bottom: 2px solid #1e293b;
-      position: relative;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-    .top-header::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 20%;
-      right: 20%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.25);
     }
     .confeccao-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       padding: 4px 14px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      color: #38bdf8;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
       text-transform: uppercase;
     }
     .pedido-title {
       font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-      color: #ffffff;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      font-weight: 800;
+      margin-bottom: 8px;
     }
     .pedido-meta-row {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
+      gap: 10px;
       flex-wrap: wrap;
     }
     .meta-chip {
-      background: rgba(255,255,255,0.06);
-      padding: 3px 10px;
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 8px;
       font-size: 12px;
+      font-weight: 600;
     }
 
-    .container { max-width: 760px; margin: 16px auto; padding: 0 14px; }
+    .container {
+      max-width: 920px;
+      margin: 18px auto;
+      padding: 0 14px;
+    }
 
-    /* Sticky Progress Header */
-    .progress-card {
-      background: var(--card-bg);
+    /* Cards Principais */
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
       border-radius: var(--radius);
-      padding: 16px 18px;
-      border: 1px solid var(--card-border);
+      padding: 18px 20px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      position: sticky;
-      top: 10px;
-      z-index: 50;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
     }
-    .progress-info {
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .step-badge {
+      background: var(--primary);
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .step-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .step-help {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
+    /* Configuração Global: Quantidade e Molde Padrão */
+    .global-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 16px;
+      align-items: end;
+    }
+    @media (max-width: 680px) {
+      .global-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .qty-box {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-soft);
+      overflow: hidden;
+      height: 46px;
+    }
+    .qty-btn {
+      width: 46px;
+      height: 100%;
+      border: none;
+      background: #e2e8f0;
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .qty-btn:hover { background: #cbd5e1; }
+    .qty-btn:active { background: #94a3b8; color: white; }
+    .qty-input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background: white;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+      outline: none;
+      height: 100%;
+    }
+
+    .molde-global-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .select-big {
+      flex: 1;
+      height: 46px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      outline: none;
+      cursor: pointer;
+    }
+    .select-big:focus {
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+    }
+
+    .btn-apply-all {
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary-hover);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .btn-apply-all:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Barra de Progresso e Ações */
+    .toolbar-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      height: 10px;
-      background: #0f172a;
-      border-radius: 5px;
-      overflow: hidden;
-      border: 1px solid #1e293b;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);
-      box-shadow: 0 0 10px var(--primary-glow);
-      transition: width 0.35s ease-out;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
     }
 
-    /* Actions Bar */
-    .actions-bar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 11px 18px;
-      border-radius: 10px;
+    .progress-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-soft);
+      color: var(--primary-hover);
+      padding: 6px 14px;
+      border-radius: 20px;
       font-size: 13px;
       font-weight: 800;
+    }
+
+    .actions-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
       border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-      color: white;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-    .btn-primary:active { transform: scale(0.98); }
-    .btn-whats {
-      background: rgba(37, 211, 102, 0.12);
-      border: 1px solid rgba(37, 211, 102, 0.4);
-      color: #25d366;
-    }
-    .btn-whats:hover { background: rgba(37, 211, 102, 0.2); }
-    .btn-outline {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid #334155;
-    }
-    .btn-outline:hover { background: #334155; }
-
-    /* Jersey Items Cards */
-    .items-container { display: flex; flex-direction: column; gap: 12px; }
-    .item-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: border-color 0.2s;
-    }
-    .item-card:focus-within { border-color: var(--primary); }
-    .item-card-row { display: flex; gap: 10px; align-items: center; }
-
-    .jersey-number-circle {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border: 1px solid #334155;
-      color: #38bdf8;
-      font-size: 15px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      flex-shrink: 0;
-    }
-
-    .input-field {
-      padding: 10px 14px;
-      background: #0d1424;
-      border: 1px solid #23314d;
-      border-radius: 8px;
-      font-size: 14px;
-      color: white;
-      outline: none;
-      transition: all 0.2s;
-    }
-    .input-field:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px var(--primary-glow);
-      background: #10192e;
-    }
-    .input-name { flex: 2; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
-    .input-num { width: 75px; text-align: center; font-weight: 900; font-size: 16px; color: #38bdf8; }
-
-    .item-card-details {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-      padding-top: 4px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .select-field {
-      padding: 8px 12px;
-      border: 1px solid #2a3a5a;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #111a2e;
-      color: #e2e8f0;
-      outline: none;
-      cursor: pointer;
-    }
-    .select-field:focus { border-color: var(--primary); }
-
-    .btn-delete-item {
-      background: none;
-      border: none;
-      color: #64748b;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 6px;
-      margin-left: auto;
-      border-radius: 6px;
+      gap: 6px;
       transition: all 0.15s;
     }
-    .btn-delete-item:hover { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-whats {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .btn-whats:hover { background: #bbf7d0; }
+    .btn-outline {
+      background: white;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { background: var(--surface-soft); }
 
-    /* Bottom Sticky Bar */
+    /* Cabeçalho da Tabela (visível em telas maiores) */
+    .list-header {
+      display: grid;
+      grid-template-columns: 44px 1.6fr 88px 92px 1.6fr 40px;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .list-row {
+      display: grid;
+      grid-template-columns: 44px 1.6fr 88px 92px 1.6fr 40px;
+      gap: 10px;
+      align-items: center;
+      background: #ffffff;
+      border: 1.5px solid var(--border-light);
+      border-radius: 12px;
+      padding: 10px 12px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .list-row:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+    .list-row.row-filled {
+      border-color: #cbd5e1;
+      background: #ffffff;
+    }
+
+    .row-num-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .list-row.row-filled .row-num-badge {
+      background: var(--primary-soft);
+      border-color: #bae6fd;
+      color: var(--primary-hover);
+    }
+
+    .field-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .mobile-label {
+      display: none;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .input-clean {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      background: #ffffff;
+      outline: none;
+    }
+    .input-clean:focus {
+      border-color: var(--primary);
+    }
+    .input-name { text-transform: uppercase; }
+    .input-num { text-align: center; color: var(--primary-hover); font-size: 15px; font-weight: 800; }
+
+    .select-clean {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      background: #ffffff;
+      outline: none;
+      cursor: pointer;
+    }
+    .select-clean:focus { border-color: var(--primary); }
+
+    .select-molde {
+      background: #f0f9ff;
+      border-color: #7dd3fc;
+      color: #0369a1;
+    }
+    .select-molde.molde-custom {
+      background: var(--accent-soft);
+      border-color: #fdba74;
+      color: #c2410c;
+    }
+
+    .btn-del {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      border-radius: 8px;
+      font-size: 17px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-del:hover {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    /* Responsivo para Celular */
+    @media (max-width: 720px) {
+      .list-header { display: none; }
+      .mobile-label { display: block; }
+      .list-row {
+        grid-template-columns: 36px 1fr 78px 36px;
+        grid-template-areas:
+          "badge nome num del"
+          "tam tam molde molde";
+        gap: 8px;
+        padding: 12px;
+      }
+      .area-badge { grid-area: badge; align-self: end; }
+      .area-nome  { grid-area: nome; }
+      .area-num   { grid-area: num; }
+      .area-del   { grid-area: del; align-self: end; }
+      .area-tam   { grid-area: tam; }
+      .area-molde { grid-area: molde; }
+    }
+
+    /* Barra Fixa Inferior */
     .bottom-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(13, 20, 36, 0.92);
-      backdrop-filter: blur(12px);
-      padding: 12px 18px;
-      border-top: 1px solid #1e293b;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border-light);
+      padding: 12px 16px;
       display: flex;
       justify-content: center;
-      box-shadow: 0 -8px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
       z-index: 100;
     }
     .btn-submit {
       width: 100%;
-      max-width: 600px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      max-width: 620px;
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
       color: white;
       padding: 15px 24px;
-      font-size: 15px;
-      font-weight: 900;
-      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 800;
       border: none;
-      box-shadow: 0 4px 18px var(--success-glow);
+      border-radius: 30px;
       cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.3px;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+      transition: transform 0.15s;
     }
     .btn-submit:active { transform: scale(0.98); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* Modal WhatsApp */
+    /* Modal Colar WhatsApp */
     .modal-overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(6px);
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
       display: none;
       align-items: center;
       justify-content: center;
@@ -286,127 +475,162 @@
       z-index: 200;
     }
     .modal-content {
-      background: #131b2e;
-      border: 1px solid #23314d;
+      background: white;
       width: 100%;
       max-width: 520px;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
-      color: white;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
     }
-    .modal-title { font-size: 17px; font-weight: 900; margin-bottom: 8px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-    .modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
+    .modal-title { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+    .modal-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
     .modal-textarea {
       width: 100%;
       height: 160px;
       padding: 12px;
-      background: #090e17;
-      border: 1px solid #2a3a5a;
-      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
       font-size: 13px;
-      color: white;
-      resize: none;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       outline: none;
       font-family: monospace;
     }
     .modal-textarea:focus { border-color: var(--primary); }
     .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
 
-    /* Success Splash */
+    /* Tela de Sucesso */
     .success-screen {
       display: none;
       text-align: center;
-      padding: 44px 20px;
-      background: #131b2e;
+      background: white;
       border-radius: var(--radius);
-      border: 1px solid #23314d;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      padding: 40px 20px;
+      border: 1px solid var(--border-light);
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
     }
-    .success-icon { font-size: 56px; margin-bottom: 16px; }
-    .success-title { font-size: 22px; font-weight: 900; color: #34d399; margin-bottom: 10px; }
-    .success-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .success-icon { font-size: 58px; margin-bottom: 12px; }
+    .success-title { font-size: 22px; font-weight: 800; color: var(--success); margin-bottom: 10px; }
+    .success-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
     .btn-notify-whats {
-      background: #25d366;
+      background: #16a34a;
       color: white;
       padding: 14px 24px;
       border-radius: 30px;
       text-decoration: none;
       font-weight: 800;
-      font-size: 14px;
+      font-size: 15px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
-      cursor: pointer;
-      border: none;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Athletic Header -->
   <header class="top-header">
-    <div id="confeccao-nome" class="confeccao-badge">⚽ FICHA OFICIAL DE UNIFORMES</div>
+    <div class="confeccao-badge">⚽ LISTA OFICIAL DO PEDIDO</div>
     <div id="pedido-titulo" class="pedido-title">Uniforme do Time</div>
     <div class="pedido-meta-row">
-      <span id="pedido-meta" class="meta-chip">Meta: 15 peças</span>
       <span id="pedido-codigo" class="meta-chip">Código: PED-0001</span>
+      <span id="pedido-meta" class="meta-chip">Meta: 15 peças</span>
     </div>
   </header>
 
-  <div class="container">
-    <!-- Sticky Progress Card -->
-    <div class="progress-card">
-      <div class="progress-info">
-        <span>Progresso da Grade</span>
-        <span id="counter-text" style="color: #38bdf8;">0 / 15 peças preenchidas</span>
+  <div class="container" id="main-content">
+
+    <!-- PASSO 1: QUANTIDADE E MOLDE PADRÃO DA LISTA -->
+    <div class="step-card" id="card-passo1">
+      <div class="step-header">
+        <span class="step-badge">PASSO 1</span>
+        <h2 class="step-title">Escolha a Quantidade e o Molde Padrão da Lista</h2>
       </div>
-      <div class="progress-bar-bg">
-        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      <p class="step-help">
+        Selecione quantas peças deseja e o <strong>Molde de Camisa</strong> principal. Todas as linhas abaixo já ficarão preenchidas automaticamente com esse molde (e se quiser, você pode mudar um ou outro nome individualmente na setinha ao lado dele).
+      </p>
+
+      <div class="global-grid">
+        <div class="control-group">
+          <label for="input-qtd-total">Quantidade na Lista</label>
+          <div class="qty-box">
+            <button type="button" class="qty-btn" onclick="alterarQuantidadeTotal(-1)">−</button>
+            <input type="number" id="input-qtd-total" class="qty-input" min="1" max="300" value="15" onchange="definirQuantidadeTotal(this.value)">
+            <button type="button" class="qty-btn" onclick="alterarQuantidadeTotal(1)">+</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="select-molde-global">Tipo de Molde Padrão (Para toda a lista)</label>
+          <div class="molde-global-row">
+            <select id="select-molde-global" class="select-big" onchange="alterarMoldeGlobal(this.value)"></select>
+            <button type="button" class="btn-apply-all" onclick="aplicarMoldeEmTodos()" title="Aplicar este molde em todas as linhas abaixo">✔ Aplicar em Todos</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="actions-bar">
-      <button class="btn btn-primary" onclick="adicionarLinha()">➕ Adicionar Jogador</button>
-      <button class="btn btn-whats" onclick="abrirModalImportar()">📋 Colar do WhatsApp</button>
+    <!-- PASSO 2: PREENCHIMENTO DA LISTA -->
+    <div class="step-card" id="card-passo2">
+      <div class="step-header">
+        <span class="step-badge">PASSO 2</span>
+        <h2 class="step-title">Preencha os Nomes, Números e Tamanhos</h2>
+      </div>
+      <p class="step-help">
+        Digite o <strong>Nome</strong> que vai nas costas, o <strong>Número</strong> e escolha o <strong>Tamanho</strong>. Ao lado de cada pessoa já aparece o molde selecionado — clique na setinha do molde apenas se aquela camisa específica for diferente.
+      </p>
+
+      <div class="toolbar-row">
+        <div id="counter-text" class="progress-pill">✅ 0 de 15 preenchidas</div>
+        <div class="actions-group">
+          <button type="button" class="btn btn-whats" onclick="abrirModalImportar()">📋 Colar lista do WhatsApp</button>
+          <button type="button" class="btn btn-primary" onclick="adicionarLinhaExtra()">➕ Mais 1 Linha</button>
+        </div>
+      </div>
+
+      <div class="list-header">
+        <div>#</div>
+        <div>Nome na Camisa</div>
+        <div>Número</div>
+        <div>Tamanho</div>
+        <div>Molde da Camisa (pode mudar individual)</div>
+        <div></div>
+      </div>
+
+      <div id="items-container" class="items-list"></div>
     </div>
 
-    <!-- Items List -->
-    <div id="items-container" class="items-container"></div>
-
-    <!-- Success Screen (após enviar) -->
+    <!-- TELA DE SUCESSO -->
     <div id="success-screen" class="success-screen">
       <div class="success-icon">🎉</div>
-      <h2 class="success-title">Grade Concluída com Sucesso!</h2>
+      <h2 class="success-title">Lista Pronta para Produção!</h2>
       <p class="success-desc">
-        A lista com todas as peças foi formatada e está pronta para entrar em produção.<br>
-        Envie diretamente no WhatsApp da confecção para confirmar seu pedido:
+        Sua lista com nomes, números, tamanhos e moldes foi montada corretamente.<br>
+        Clique no botão verde abaixo para enviar no WhatsApp da confecção:
       </p>
       <a id="link-whatsapp-aviso" href="#" target="_blank" class="btn-notify-whats">
-        📲 Enviar Grade Pronta no WhatsApp da Confecção
+        📲 Enviar Lista no WhatsApp da Confecção
       </a>
-      <div style="margin-top: 18px;">
-        <button class="btn btn-outline" onclick="copiarTextoGrade()">📋 Copiar Lista de Peças</button>
+      <div style="margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-outline" onclick="copiarTextoGrade()">📋 Copiar Lista</button>
+        <button type="button" class="btn btn-outline" onclick="voltarEditar()">✏️ Voltar e Editar</button>
       </div>
     </div>
+
   </div>
 
-  <div class="bottom-bar">
-    <button id="btn-submit" class="btn-submit" onclick="enviarGrade()">🚀 Finalizar e Enviar para a Confecção</button>
+  <div class="bottom-bar" id="bottom-bar">
+    <button id="btn-submit" class="btn-submit" onclick="enviarGrade()">✅ Finalizar e Enviar Lista no WhatsApp</button>
   </div>
 
-  <!-- Modal Colar WhatsApp -->
+  <!-- MODAL COLAR DO WHATSAPP -->
   <div id="modal-whatsapp" class="modal-overlay">
     <div class="modal-content">
       <h3 class="modal-title">📋 Colar Lista do WhatsApp</h3>
-      <p class="modal-desc">Cole o texto que o pessoal mandou no grupo. O sistema detecta nomes, números, tamanhos e funções automaticamente:</p>
-      <textarea id="txt-whatsapp" class="modal-textarea" placeholder="Exemplo:&#10;10 - Silva - G&#10;7 - Neymar - M&#10;1 - Alisson - Goleiro Manga Longa GG"></textarea>
+      <p class="modal-desc">Cole o texto que você já tem no WhatsApp. O sistema organiza os nomes, números e tamanhos e coloca automaticamente o molde padrão selecionado:</p>
+      <textarea id="txt-whatsapp" class="modal-textarea" placeholder="Exemplo:&#10;10 - João - G&#10;7 - Marcos - M&#10;1 - Carlos - GG Goleiro"></textarea>
       <div class="modal-buttons">
-        <button class="btn btn-outline" onclick="fecharModalImportar()">Cancelar</button>
-        <button class="btn btn-primary" onclick="processarTextoImportado()">✔ Importar Peças</button>
+        <button type="button" class="btn btn-outline" onclick="fecharModalImportar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="processarTextoImportado()">✔ Importar para a Lista</button>
       </div>
     </div>
   </div>
@@ -418,6 +642,25 @@
     const codParam = urlParams.get('cod') || 'PED-0001';
     const telParam = (urlParams.get('tel') || '').replace(/\D/g, '');
 
+    const TAMANHOS = ["PP", "P", "M", "G", "GG", "XG", "G1", "G2", "2", "4", "6", "8", "10", "12", "14", "16"];
+
+    const MOLDES = [
+      "Gola O - Manga Curta",
+      "Gola V - Manga Curta",
+      "Gola Polo - Manga Curta",
+      "Gola Padre - Manga Curta",
+      "Gola O - Manga Longa",
+      "Gola V - Manga Longa",
+      "Goleiro - Manga Longa",
+      "Regata / Sem Manga",
+      "Baby Look (Feminina) - Gola O",
+      "Baby Look (Feminina) - Gola V",
+      "Infantil - Gola O - Manga Curta",
+      "Infantil - Gola V - Manga Curta"
+    ];
+
+    let moldePadraoGlobal = MOLDES[0];
+
     let pedidoData = {
       titulo: timeParam,
       qtd_esperada: qtdParam > 0 ? qtdParam : 15,
@@ -426,45 +669,117 @@
       itens: []
     };
 
-    const TAMANHOS = ["PP", "P", "M", "G", "GG", "XG", "G1", "G2", "2", "4", "6", "8", "10", "12", "14", "16"];
+    function popularSelectMoldeGlobal() {
+      const sel = document.getElementById('select-molde-global');
+      sel.innerHTML = MOLDES.map(m => `<option value="${m}" ${m === moldePadraoGlobal ? 'selected' : ''}>${m}</option>`).join('');
+    }
 
     function iniciarFormulario() {
       document.getElementById('pedido-titulo').textContent = pedidoData.titulo.toUpperCase();
-      document.getElementById('pedido-meta').textContent = `👕 Meta: ${pedidoData.qtd_esperada} peças`;
       document.getElementById('pedido-codigo').textContent = `Código: ${pedidoData.codigo}`;
+      document.getElementById('pedido-meta').textContent = `Meta: ${pedidoData.qtd_esperada} peças`;
+      document.getElementById('input-qtd-total').value = pedidoData.qtd_esperada;
 
-      // Cria os slots de jogadores iniciais baseados na meta
-      const slotsIniciais = Math.min(Math.max(pedidoData.qtd_esperada, 1), 30);
-      for (let i = 0; i < slotsIniciais; i++) {
-        adicionarLinha(false, (i + 1).toString());
+      popularSelectMoldeGlobal();
+
+      const qtdInicial = Math.min(Math.max(pedidoData.qtd_esperada, 1), 300);
+      for (let i = 0; i < qtdInicial; i++) {
+        pedidoData.itens.push({
+          Nome: "",
+          Numero: "",
+          Tamanho: "G",
+          Molde: moldePadraoGlobal,
+          MoldeCustomizado: false
+        });
       }
 
       renderizarItens();
       atualizarContador();
     }
 
-    function adicionarLinha(render = true, numeroSugerido = "") {
-      const idx = pedidoData.itens.length;
+    function alterarQuantidadeTotal(delta) {
+      const input = document.getElementById('input-qtd-total');
+      const atual = parseInt(input.value || pedidoData.itens.length, 10) || 1;
+      definirQuantidadeTotal(atual + delta);
+    }
+
+    function definirQuantidadeTotal(novoValor) {
+      let n = parseInt(novoValor, 10);
+      if (isNaN(n) || n < 1) n = 1;
+      if (n > 300) n = 300;
+
+      document.getElementById('input-qtd-total').value = n;
+      pedidoData.qtd_esperada = n;
+      document.getElementById('pedido-meta').textContent = `Meta: ${n} peças`;
+
+      while (pedidoData.itens.length < n) {
+        pedidoData.itens.push({
+          Nome: "",
+          Numero: "",
+          Tamanho: "G",
+          Molde: moldePadraoGlobal,
+          MoldeCustomizado: false
+        });
+      }
+
+      if (pedidoData.itens.length > n) {
+        // Remove apenas linhas vazias do final primeiro, ou reduz até N
+        while (pedidoData.itens.length > n) {
+          pedidoData.itens.pop();
+        }
+      }
+
+      renderizarItens();
+      atualizarContador();
+    }
+
+    function alterarMoldeGlobal(novoMolde) {
+      moldePadraoGlobal = novoMolde;
+      // Atualiza automaticamente todas as linhas que NÃO foram personalizadas individualmente
+      pedidoData.itens.forEach(it => {
+        if (!it.MoldeCustomizado) {
+          it.Molde = novoMolde;
+        }
+      });
+      renderizarItens();
+    }
+
+    function aplicarMoldeEmTodos() {
+      const sel = document.getElementById('select-molde-global');
+      moldePadraoGlobal = sel.value;
+      pedidoData.itens.forEach(it => {
+        it.Molde = moldePadraoGlobal;
+        it.MoldeCustomizado = false;
+      });
+      renderizarItens();
+    }
+
+    function adicionarLinhaExtra() {
       pedidoData.itens.push({
         Nome: "",
-        Numero: numeroSugerido || (idx + 1).toString(),
+        Numero: "",
         Tamanho: "G",
-        Categoria: "Masculino",
-        Manga: "Manga Curta",
-        Funcao: "Linha"
+        Molde: moldePadraoGlobal,
+        MoldeCustomizado: false
       });
-      if (render) {
-        renderizarItens();
-        atualizarContador();
-      }
+      pedidoData.qtd_esperada = pedidoData.itens.length;
+      document.getElementById('input-qtd-total').value = pedidoData.itens.length;
+      document.getElementById('pedido-meta').textContent = `Meta: ${pedidoData.itens.length} peças`;
+      renderizarItens();
+      atualizarContador();
     }
 
     function removerLinha(index) {
-      if (confirm("Remover esta peça da grade?")) {
+      if (pedidoData.itens.length <= 1) {
+        pedidoData.itens[0] = { Nome: "", Numero: "", Tamanho: "G", Molde: moldePadraoGlobal, MoldeCustomizado: false };
+      } else {
         pedidoData.itens.splice(index, 1);
-        renderizarItens();
-        atualizarContador();
       }
+      pedidoData.qtd_esperada = pedidoData.itens.length;
+      document.getElementById('input-qtd-total').value = pedidoData.itens.length;
+      document.getElementById('pedido-meta').textContent = `Meta: ${pedidoData.itens.length} peças`;
+      renderizarItens();
+      atualizarContador();
     }
 
     function renderizarItens() {
@@ -472,46 +787,56 @@
       container.innerHTML = '';
 
       pedidoData.itens.forEach((it, idx) => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
+        const preenchido = (it.Nome && it.Nome.trim().length > 0) || (it.Numero && it.Numero.trim().length > 0);
+        const row = document.createElement('div');
+        row.className = 'list-row' + (preenchido ? ' row-filled' : '');
+        row.id = `row-${idx}`;
 
         const optTam = TAMANHOS.map(t => `<option value="${t}" ${it.Tamanho === t ? 'selected' : ''}>${t}</option>`).join('');
+        const optMolde = MOLDES.map(m => `<option value="${m}" ${it.Molde === m ? 'selected' : ''}>${m}</option>`).join('');
 
-        card.innerHTML = `
-          <div class="item-card-row">
-            <div class="jersey-number-circle">#${it.Numero || (idx + 1)}</div>
-            <input type="text" class="input-field input-name" placeholder="NOME NAS COSTAS" value="${it.Nome || ''}" oninput="itAtualizar(${idx}, 'Nome', this.value.toUpperCase())">
-            <input type="text" class="input-field input-num" placeholder="Nº" value="${it.Numero || ''}" oninput="itAtualizar(${idx}, 'Numero', this.value); atualizarNumeroBadge(this, ${idx})">
-            <button class="btn-delete-item" onclick="removerLinha(${idx})" title="Remover">🗑️</button>
+        row.innerHTML = `
+          <div class="area-badge">
+            <div class="row-num-badge">${idx + 1}</div>
           </div>
-          <div class="item-card-details">
-            <select class="select-field" onchange="itAtualizar(${idx}, 'Tamanho', this.value)">
+          <div class="field-wrap area-nome">
+            <span class="mobile-label">Nome na Camisa</span>
+            <input type="text" class="input-clean input-name" placeholder="Ex: JOÃO" value="${it.Nome || ''}" oninput="aoDigitarTexto(${idx}, 'Nome', this.value.toUpperCase(), this)">
+          </div>
+          <div class="field-wrap area-num">
+            <span class="mobile-label">Número</span>
+            <input type="text" class="input-clean input-num" placeholder="Nº" value="${it.Numero || ''}" oninput="aoDigitarTexto(${idx}, 'Numero', this.value, this)">
+          </div>
+          <div class="field-wrap area-tam">
+            <span class="mobile-label">Tamanho</span>
+            <select class="select-clean" onchange="itAtualizar(${idx}, 'Tamanho', this.value)">
               ${optTam}
             </select>
-            <select class="select-field" onchange="itAtualizar(${idx}, 'Categoria', this.value)">
-              <option value="Masculino" ${it.Categoria === 'Masculino' ? 'selected' : ''}>Masculino</option>
-              <option value="Feminino" ${it.Categoria === 'Feminino' ? 'selected' : ''}>Feminino (Baby Look)</option>
-              <option value="Infantil" ${it.Categoria === 'Infantil' ? 'selected' : ''}>Infantil</option>
-            </select>
-            <select class="select-field" onchange="itAtualizar(${idx}, 'Manga', this.value)">
-              <option value="Manga Curta" ${it.Manga === 'Manga Curta' ? 'selected' : ''}>Manga Curta</option>
-              <option value="Manga Longa" ${it.Manga === 'Manga Longa' ? 'selected' : ''}>Manga Longa</option>
-            </select>
-            <select class="select-field" onchange="itAtualizar(${idx}, 'Funcao', this.value)">
-              <option value="Linha" ${it.Funcao === 'Linha' ? 'selected' : ''}>Jogador de Linha</option>
-              <option value="Goleiro" ${it.Funcao === 'Goleiro' ? 'selected' : ''}>Goleiro</option>
-              <option value="Comissão" ${it.Funcao === 'Comissão' ? 'selected' : ''}>Comissão Técnica</option>
+          </div>
+          <div class="field-wrap area-molde">
+            <span class="mobile-label">Molde da Camisa</span>
+            <select class="select-clean select-molde ${it.MoldeCustomizado ? 'molde-custom' : ''}" onchange="alterarMoldeIndividual(${idx}, this)">
+              ${optMolde}
             </select>
           </div>
+          <div class="area-del">
+            <button type="button" class="btn-del" onclick="removerLinha(${idx})" title="Remover esta linha">🗑️</button>
+          </div>
         `;
-        container.appendChild(card);
+        container.appendChild(row);
       });
     }
 
-    function atualizarNumeroBadge(input, idx) {
-      const badge = input.parentElement.querySelector('.jersey-number-circle');
-      if (badge) {
-        badge.textContent = '#' + (input.value.trim() || (idx + 1));
+    function aoDigitarTexto(idx, campo, valor, inputEl) {
+      if (pedidoData.itens[idx]) {
+        pedidoData.itens[idx][campo] = valor;
+        const row = document.getElementById(`row-${idx}`);
+        const it = pedidoData.itens[idx];
+        const preenchido = (it.Nome && it.Nome.trim().length > 0) || (it.Numero && it.Numero.trim().length > 0);
+        if (row) {
+          row.classList.toggle('row-filled', preenchido);
+        }
+        atualizarContador();
       }
     }
 
@@ -522,16 +847,21 @@
       }
     }
 
-    function atualizarContador() {
-      const preenchidos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0)).length;
-      const total = pedidoData.qtd_esperada || pedidoData.itens.length || 1;
-      document.getElementById('counter-text').textContent = `${preenchidos} de ${total} peças preenchidas`;
-
-      const pct = Math.min(100, Math.round((preenchidos / total) * 100));
-      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+    function alterarMoldeIndividual(idx, selectEl) {
+      if (pedidoData.itens[idx]) {
+        const val = selectEl.value;
+        pedidoData.itens[idx].Molde = val;
+        pedidoData.itens[idx].MoldeCustomizado = (val !== moldePadraoGlobal);
+        selectEl.classList.toggle('molde-custom', pedidoData.itens[idx].MoldeCustomizado);
+      }
     }
 
-    // Modal Importar WhatsApp
+    function atualizarContador() {
+      const preenchidos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0)).length;
+      const total = pedidoData.itens.length || 1;
+      document.getElementById('counter-text').textContent = `✅ ${preenchidos} de ${total} peça(s) preenchida(s)`;
+    }
+
     function abrirModalImportar() {
       document.getElementById('modal-whatsapp').style.display = 'flex';
       document.getElementById('txt-whatsapp').focus();
@@ -545,7 +875,7 @@
       if (!texto.trim()) return;
 
       const linhas = texto.split('\n');
-      pedidoData.itens = []; // substitui pelas peças importadas
+      const importados = [];
 
       linhas.forEach(linha => {
         const l = linha.trim();
@@ -557,29 +887,40 @@
         let tamMatch = l.match(/\b(PP|P|M|G|GG|XG|G1|G2|10|12|14|16|2|4|6|8)\b/i);
         let tam = tamMatch ? tamMatch[0].toUpperCase() : "G";
 
-        let manga = /manga\s*longa/i.test(l) ? "Manga Longa" : "Manga Curta";
-        let funcao = /goleiro/i.test(l) ? "Goleiro" : "Linha";
-        let cat = /fem|baby/i.test(l) ? "Feminino" : (/infantil/i.test(l) ? "Infantil" : "Masculino");
+        let molde = moldePadraoGlobal;
+        let isCustom = false;
+        if (/goleiro/i.test(l)) { molde = "Goleiro - Manga Longa"; isCustom = true; }
+        else if (/baby[\s\-]*look|fem/i.test(l)) { molde = /gola\s*v/i.test(l) ? "Baby Look (Feminina) - Gola V" : "Baby Look (Feminina) - Gola O"; isCustom = true; }
+        else if (/infantil|kids/i.test(l)) { molde = /gola\s*v/i.test(l) ? "Infantil - Gola V - Manga Curta" : "Infantil - Gola O - Manga Curta"; isCustom = true; }
+        else if (/manga\s*longa/i.test(l)) { molde = /gola\s*v/i.test(l) ? "Gola V - Manga Longa" : "Gola O - Manga Longa"; isCustom = true; }
+        else if (/regata/i.test(l)) { molde = "Regata / Sem Manga"; isCustom = true; }
+        else if (/polo/i.test(l)) { molde = "Gola Polo - Manga Curta"; isCustom = true; }
 
         let nomeLimpo = l
           .replace(new RegExp(`\\b${num}\\b`, 'g'), '')
           .replace(new RegExp(`\\b${tam}\\b`, 'gi'), '')
-          .replace(/manga\s*longa|manga\s*curta|goleiro|linha|masculino|feminino|infantil/gi, '')
+          .replace(/manga\s*longa|manga\s*curta|goleiro|linha|masculino|feminino|baby\s*look|infantil|gola\s*[ov]|polo|regata/gi, '')
           .replace(/[-–—,;:|]/g, ' ')
           .replace(/\s+/g, ' ')
           .trim();
 
         if (nomeLimpo || num) {
-          pedidoData.itens.push({
+          importados.push({
             Nome: nomeLimpo.toUpperCase(),
             Numero: num,
             Tamanho: tam,
-            Categoria: cat,
-            Manga: manga,
-            Funcao: funcao
+            Molde: molde,
+            MoldeCustomizado: isCustom
           });
         }
       });
+
+      if (importados.length > 0) {
+        pedidoData.itens = importados;
+        pedidoData.qtd_esperada = importados.length;
+        document.getElementById('input-qtd-total').value = importados.length;
+        document.getElementById('pedido-meta').textContent = `Meta: ${importados.length} peças`;
+      }
 
       fecharModalImportar();
       renderizarItens();
@@ -589,51 +930,54 @@
     function gerarTextoGrade() {
       let linhas = [];
       const validos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0));
-      
-      linhas.push(`📋 *GRADE DO PEDIDO: ${pedidoData.codigo} - ${pedidoData.titulo.toUpperCase()}* (${validos.length} Peças)`);
+
+      linhas.push(`📋 *LISTA DE PEDIDO: ${pedidoData.codigo} - ${pedidoData.titulo.toUpperCase()}* (${validos.length} Peças)`);
+      linhas.push(`📌 *Molde Padrão Escolhido:* ${moldePadraoGlobal}`);
       linhas.push('');
       validos.forEach((it, idx) => {
-        let num = it.Numero ? it.Numero : (idx + 1);
-        let nome = (it.Nome || 'SEM NOME').toUpperCase();
-        linhas.push(`${num} - ${nome} - ${it.Tamanho} (${it.Categoria} / ${it.Manga}${it.Funcao === 'Goleiro' ? ' / GOLEIRO' : ''})`);
+        let num = it.Numero ? it.Numero.trim() : (idx + 1);
+        let nome = (it.Nome || 'SEM NOME').trim().toUpperCase();
+        linhas.push(`${idx + 1}) Nome: ${nome} | Nº: ${num} | Tam: ${it.Tamanho} | Molde: ${it.Molde}`);
       });
       linhas.push('');
-      linhas.push('✅ _Grade finalizada pelo cliente e pronta para corte e confecção._');
+      linhas.push('✅ _Lista confirmada pelo cliente e pronta para produção._');
       return linhas.join('\n');
     }
 
     function enviarGrade() {
-      const textoMsg = gerarTextoGrade();
       const validos = (pedidoData.itens || []).filter(i => (i.Nome && i.Nome.trim().length > 0) || (i.Numero && i.Numero.trim().length > 0));
-
       if (validos.length === 0) {
-        alert("Por favor, preencha o nome ou número de ao menos um jogador antes de enviar.");
+        alert("Por favor, preencha o nome ou o número de pelo menos uma camisa antes de enviar.");
         return;
       }
 
+      const textoMsg = gerarTextoGrade();
       let whatsUrl = pedidoData.telefone_confeccao
         ? `https://api.whatsapp.com/send?phone=${pedidoData.telefone_confeccao}&text=${encodeURIComponent(textoMsg)}`
         : `https://api.whatsapp.com/send?text=${encodeURIComponent(textoMsg)}`;
 
-      document.getElementById('items-container').style.display = 'none';
-      document.querySelector('.actions-bar').style.display = 'none';
-      document.querySelector('.progress-card').style.display = 'none';
-      document.querySelector('.bottom-bar').style.display = 'none';
+      document.getElementById('card-passo1').style.display = 'none';
+      document.getElementById('card-passo2').style.display = 'none';
+      document.getElementById('bottom-bar').style.display = 'none';
 
-      const btnAviso = document.getElementById('link-whatsapp-aviso');
-      btnAviso.href = whatsUrl;
-
-      // Abre o WhatsApp com a mensagem pronta
-      window.location.href = whatsUrl;
-
+      document.getElementById('link-whatsapp-aviso').href = whatsUrl;
       document.getElementById('success-screen').style.display = 'block';
+
+      window.location.href = whatsUrl;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function voltarEditar() {
+      document.getElementById('success-screen').style.display = 'none';
+      document.getElementById('card-passo1').style.display = 'block';
+      document.getElementById('card-passo2').style.display = 'block';
+      document.getElementById('bottom-bar').style.display = 'flex';
     }
 
     function copiarTextoGrade() {
       const texto = gerarTextoGrade();
       navigator.clipboard.writeText(texto).then(() => {
-        alert("Lista copiada com sucesso para a Área de Transferência!");
+        alert("Lista copiada com sucesso!");
       }).catch(() => {
         prompt("Copie a lista abaixo:", texto);
       });
